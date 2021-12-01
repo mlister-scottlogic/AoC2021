@@ -1,10 +1,11 @@
 
 
 fn main() {
-    day1_part1();
+    println!("Day 1 Part 1: {}", day1_part1());
+    println!("Day 1 Part 2: {}", day1_part2());
 }
 
-fn day1_part1() {
+fn day1_part1() -> i32 {
     let values = day1_input();
 
     let mut last_value : Option<i32> = None;
@@ -22,7 +23,26 @@ fn day1_part1() {
         }
     }
 
-    println!("Day 1 part 1 output: {}", output);
+    output
+}
+
+fn day1_part2() -> i32 {
+    const WINDOW_SIZE: usize = 3;
+
+    let values = day1_input();
+
+    let mut previous_average : i32 = (&values[..WINDOW_SIZE]).iter().sum();
+    let mut output = 0;
+
+    for i in 1..=(values.len() - WINDOW_SIZE) {
+        let current_average : i32 = (&values[i..i+WINDOW_SIZE]).iter().sum();
+
+        if current_average > previous_average { output += 1; }
+
+        previous_average = current_average;
+    }
+
+    output
 }
 
 fn day1_input() -> Vec<i32> {
