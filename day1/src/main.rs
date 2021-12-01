@@ -1,17 +1,15 @@
-
-
 fn main() {
-    println!("Day 1 Part 1: {}", day1_part1());
-    println!("Day 1 Part 2: {}", day1_part2());
+    let input = day1_input();
+
+    println!("Day 1 Part 1: {}", day1_part1(&input));
+    println!("Day 1 Part 2: {}", day1_part2(&input));
 }
 
-fn day1_part1() -> i32 {
-    let values = day1_input();
-
-    let mut last_value : Option<i32> = None;
+fn day1_part1(input: &Vec<i32>) -> i32 {
+    let mut last_value: Option<i32> = None;
     let mut output = 0;
 
-    for current_value in values {
+    for current_value in input.iter().copied() {
         match last_value {
             Some(last) => {
                 if current_value > last { output += 1 };
@@ -26,15 +24,12 @@ fn day1_part1() -> i32 {
     output
 }
 
-fn day1_part2() -> i32 {
+fn day1_part2(input: &Vec<i32>) -> i32 {
     const WINDOW_SIZE: usize = 3;
-
-    let values = day1_input();
-
-    let mut last_value : Option<i32> = None;
+    let mut last_value: Option<i32> = None;
     let mut output = 0;
 
-    let windows = values.windows(WINDOW_SIZE);
+    let windows = input.windows(WINDOW_SIZE);
 
     for w in windows {
         let current_average = w.iter().sum();
