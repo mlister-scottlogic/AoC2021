@@ -12,7 +12,9 @@ fn day1_part1(input: &Vec<i32>) -> i32 {
     for current_value in input.iter().copied() {
         match last_value {
             Some(last) => {
-                if current_value > last { output += 1 };
+                if current_value > last {
+                    output += 1
+                };
                 last_value = Some(current_value);
             }
             None => {
@@ -35,7 +37,9 @@ fn day1_part2(input: &Vec<i32>) -> i32 {
         let current_sum = w.iter().sum();
         match last_value {
             Some(last) => {
-                if current_sum > last { output += 1 };
+                if current_sum > last {
+                    output += 1
+                };
                 last_value = Some(current_sum);
             }
             None => {
