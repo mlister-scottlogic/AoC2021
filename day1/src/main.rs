@@ -53,7 +53,7 @@ fn day1_part2() -> i32 {
 }
 
 fn day1_input() -> Vec<i32> {
-    let day_1_input = include_str!("inputs/day1.txt");
+    let day_1_input = include_str!("input.txt");
     let input = day_1_input.split("\n").map(|s| s.trim());
 
     let values = input.map(|s| s.parse().unwrap()).collect::<Vec<i32>>();
