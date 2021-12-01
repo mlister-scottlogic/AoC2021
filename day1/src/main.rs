@@ -32,14 +32,14 @@ fn day1_part2(input: &Vec<i32>) -> i32 {
     let windows = input.windows(WINDOW_SIZE);
 
     for w in windows {
-        let current_average = w.iter().sum();
+        let current_sum = w.iter().sum();
         match last_value {
             Some(last) => {
-                if current_average > last { output += 1 };
-                last_value = Some(current_average);
+                if current_sum > last { output += 1 };
+                last_value = Some(current_sum);
             }
             None => {
-                last_value = Some(current_average);
+                last_value = Some(current_sum);
             }
         }
     }
