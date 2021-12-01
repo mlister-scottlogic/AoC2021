@@ -31,15 +31,22 @@ fn day1_part2() -> i32 {
 
     let values = day1_input();
 
-    let mut previous_average : i32 = (&values[..WINDOW_SIZE]).iter().sum();
+    let mut last_value : Option<i32> = None;
     let mut output = 0;
 
-    for i in 1..=(values.len() - WINDOW_SIZE) {
-        let current_average : i32 = (&values[i..i+WINDOW_SIZE]).iter().sum();
+    let windows = values.windows(WINDOW_SIZE);
 
-        if current_average > previous_average { output += 1; }
-
-        previous_average = current_average;
+    for w in windows {
+        let current_average = w.iter().sum();
+        match last_value {
+            Some(last) => {
+                if current_average > last { output += 1 };
+                last_value = Some(current_average);
+            }
+            None => {
+                last_value = Some(current_average);
+            }
+        }
     }
 
     output
