@@ -52,7 +52,7 @@ fn get_input() -> Vec<ControlMessage> {
 
     let values = input
         .map(|s| {
-            let splits = s.split(' ').collect::<Vec<&str>>();
+            let splits = s.split(' ').collect::<Vec<_>>();
 
             let control_type = match splits[0] {
                 "forward" => ControlType::Forward,
@@ -61,14 +61,14 @@ fn get_input() -> Vec<ControlMessage> {
                 _ => panic!("Unknown input command found"),
             };
 
-            let value = splits[1].parse::<i32>().unwrap();
+            let value = splits[1].parse().unwrap();
 
             ControlMessage {
                 control_type,
                 value,
             }
         })
-        .collect::<Vec<ControlMessage>>();
+        .collect::<Vec<_>>();
 
     values
 }
