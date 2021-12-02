@@ -63,12 +63,10 @@ fn get_input() -> Vec<ControlMessage> {
 
             let value = splits[1].parse::<i32>().unwrap();
 
-            let control_message = ControlMessage {
+            ControlMessage {
                 control_type,
                 value,
-            };
-
-            control_message
+            }
         })
         .collect::<Vec<ControlMessage>>();
 
