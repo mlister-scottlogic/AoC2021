@@ -46,7 +46,6 @@ fn hidden_reading_extractor(
     let still_valid_inputs = input
         .iter()
         .filter(|c| c[index] == most_common_remaining[index])
-        .cloned()
         .collect();
 
     let new_index = index + 1;
