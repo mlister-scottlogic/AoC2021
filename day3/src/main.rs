@@ -2,7 +2,7 @@ fn main() {
     let input = get_input();
 
     println!("Day 3 Part 1: {}", part1(&input));
-    // println!("Day 3 Part 2: {}", part2(&input));
+    println!("Day 3 Part 2: {}", part2(&input));
 }
 
 fn part1(readings: &Vec<Vec<char>>) -> i32 {
@@ -15,37 +15,41 @@ fn part1(readings: &Vec<Vec<char>>) -> i32 {
     gamma * epsilon
 }
 
-// fn part2(readings: &Vec<Vec<char>>, most_common: &(String, String)) -> i32 {
-//     let oxygen_generator = hidden_reading_extractor(readings, &most_common.0.chars().collect(), 0);
-//     let co2_scrubber = hidden_reading_extractor(readings, &most_common.1.chars().collect(), 0);
+fn part2(readings: &Vec<Vec<char>>) -> i32 {
+    let oxygen_generator_closure =
+        |remaining_input: &Vec<Vec<char>>| most_common(remaining_input, '1');
+    let co2_scrubber_closure = |remaining_input: &Vec<Vec<char>>| most_common(remaining_input, '0');
 
-//     println!("{}", oxygen_generator);
-//     println!("{}", co2_scrubber);
+    let oxygen_generator = hidden_reading_extractor(readings, 0, &oxygen_generator_closure);
 
-//     oxygen_generator * co2_scrubber
-// }
+    let co2_scrubber = hidden_reading_extractor(readings, 0, &co2_scrubber_closure);
 
-// fn hidden_reading_extractor(
-//     input: &Vec<Vec<char>>,
-//     index: usize,
-//     find_most_common: &dyn Fn(&Vec<Vec<char>>) -> Vec<char>,
-// ) -> i32 {
-//     if input.len() == 1 {
-//         let hidden_reading_string = input[0].iter().collect::<String>();
+    oxygen_generator * co2_scrubber
+}
 
-//         return i32::from_str_radix(&hidden_reading_string, 2).unwrap();
-//     }
+fn hidden_reading_extractor(
+    input: &Vec<Vec<char>>,
+    index: usize,
+    find_most_common: &dyn Fn(&Vec<Vec<char>>) -> Vec<char>,
+) -> i32 {
+    if input.len() == 1 {
+        let hidden_reading_string = input[0].iter().collect::<String>();
 
-//     let still_valid_inputs = input
-//         .iter()
-//         .filter(|c| c[index] == bit_matcher[index])
-//         .cloned()
-//         .collect();
+        return i32::from_str_radix(&hidden_reading_string, 2).unwrap();
+    }
 
-//     let new_index = index + 1;
+    let most_common_remaining = find_most_common(input);
 
-//     hidden_reading_extractor(&still_valid_inputs, bit_matcher, new_index)
-// }
+    let still_valid_inputs = input
+        .iter()
+        .filter(|c| c[index] == most_common_remaining[index])
+        .cloned()
+        .collect();
+
+    let new_index = index + 1;
+
+    hidden_reading_extractor(&still_valid_inputs, new_index, find_most_common)
+}
 
 fn most_common(input: &Vec<Vec<char>>, target: char) -> Vec<char> {
     let input_length = input[0].len();
@@ -64,7 +68,16 @@ fn most_common(input: &Vec<Vec<char>>, target: char) -> Vec<char> {
     position_counter
         .iter()
         .copied()
-        .map(|v| if v >= 0 { '1' } else { '0' })
+        .map(|v| {
+            if v == 0 {
+                return target;
+            }
+            if v > 0 {
+                '1'
+            } else {
+                '0'
+            }
+        })
         .collect()
 }
 
