@@ -1,0 +1,10 @@
+[workspace]
+
+members = [
+    "day1",
+    "day2",
+    "day3"
+]
+
+[profile.release]
+overflow-checks = true
