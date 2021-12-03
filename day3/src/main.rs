@@ -59,8 +59,8 @@ fn most_common(input: &Vec<Vec<bool>>, target: bool) -> Vec<bool> {
     let mut position_counter = vec![0; input_length];
 
     for input_line in input {
-        for (i, t) in input_line.into_iter().enumerate() {
-            if *t == target {
+        for (i, &t) in input_line.iter().enumerate() {
+            if t == target {
                 position_counter[i] += 1
             } else {
                 position_counter[i] -= 1
@@ -70,7 +70,6 @@ fn most_common(input: &Vec<Vec<bool>>, target: bool) -> Vec<bool> {
 
     position_counter
         .iter()
-        .copied()
         .map(|v| {
             if v == 0 {
                 return target;
