@@ -14,10 +14,9 @@ fn part1(readings: &Vec<Vec<bool>>) -> i32 {
 
 fn part2(readings: &Vec<Vec<bool>>) -> i32 {
     let oxygen_most_common = |remaining_input: &Vec<Vec<_>>| most_common(remaining_input, true);
-    let co2_most_common = |remaining_input: &Vec<Vec<_>>| most_common(remaining_input, false);
-
     let oxygen_generator = hidden_reading_extractor(readings, 0, &oxygen_most_common);
 
+    let co2_most_common = |remaining_input: &Vec<Vec<_>>| most_common(remaining_input, false);
     let co2_scrubber = hidden_reading_extractor(readings, 0, &co2_most_common);
 
     oxygen_generator * co2_scrubber
