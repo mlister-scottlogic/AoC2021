@@ -25,7 +25,7 @@ fn part2(readings: &Vec<Vec<bool>>) -> i32 {
 fn convert_to_int(bit_list: &Vec<bool>) -> i32 {
     let string_binary = bit_list
         .iter()
-        .map(|v| (*v as u8).to_string())
+        .map(|&v| (v as u8).to_string())
         .collect::<String>();
 
     i32::from_str_radix(&string_binary, 2).unwrap()
@@ -70,7 +70,7 @@ fn most_common(input: &Vec<Vec<bool>>, target: bool) -> Vec<bool> {
 
     position_counter
         .iter()
-        .map(|v| {
+        .map(|&v| {
             if v == 0 {
                 return target;
             }
