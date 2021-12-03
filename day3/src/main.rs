@@ -16,13 +16,12 @@ fn part1(readings: &Vec<Vec<char>>) -> i32 {
 }
 
 fn part2(readings: &Vec<Vec<char>>) -> i32 {
-    let oxygen_generator_closure =
-        |remaining_input: &Vec<Vec<char>>| most_common(remaining_input, '1');
-    let co2_scrubber_closure = |remaining_input: &Vec<Vec<char>>| most_common(remaining_input, '0');
+    let oxygen_most_common = |remaining_input: &Vec<Vec<char>>| most_common(remaining_input, '1');
+    let co2_most_common = |remaining_input: &Vec<Vec<char>>| most_common(remaining_input, '0');
 
-    let oxygen_generator = hidden_reading_extractor(readings, 0, &oxygen_generator_closure);
+    let oxygen_generator = hidden_reading_extractor(readings, 0, &oxygen_most_common);
 
-    let co2_scrubber = hidden_reading_extractor(readings, 0, &co2_scrubber_closure);
+    let co2_scrubber = hidden_reading_extractor(readings, 0, &co2_most_common);
 
     oxygen_generator * co2_scrubber
 }
@@ -38,6 +37,7 @@ fn hidden_reading_extractor(
         return i32::from_str_radix(&hidden_reading_string, 2).unwrap();
     }
 
+    // This is doing more work than it has to, would be better to pass only the items after the index
     let most_common_remaining = find_most_common(input);
 
     let still_valid_inputs = input
@@ -55,9 +55,9 @@ fn most_common(input: &Vec<Vec<char>>, target: char) -> Vec<char> {
     let input_length = input[0].len();
     let mut position_counter = vec![0; input_length];
 
-    for binary_string in input {
-        for i in 0..binary_string.len() {
-            if binary_string[i] == target {
+    for input_line in input {
+        for (i, t) in input_line.into_iter().enumerate() {
+            if *t == target {
                 position_counter[i] += 1
             } else {
                 position_counter[i] -= 1
@@ -81,6 +81,7 @@ fn most_common(input: &Vec<Vec<char>>, target: char) -> Vec<char> {
         .collect()
 }
 
+// Working with chars doesn't seem quite right
 fn get_input() -> Vec<Vec<char>> {
     let day_2_input = include_str!("input.txt");
     let input = day_2_input.split("\n").map(|s| s.trim());
