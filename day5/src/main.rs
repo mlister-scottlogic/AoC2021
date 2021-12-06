@@ -6,6 +6,7 @@ fn run() {
     let instructions = get_input();
 
     println!("{}", part1(&instructions));
+    println!("{}", part2(&instructions));
 }
 
 fn main() {
@@ -24,12 +25,24 @@ fn part1(instructions: &Vec<Instruction>) -> usize {
     let mut grid: [[u8; GRID_SIZE]; GRID_SIZE] = [[0; GRID_SIZE]; GRID_SIZE];
 
     for instruction in instructions {
-        // println!(
-        //     "Start x{} y{}  End x{} y{}",
-        //     instruction.start.x, instruction.start.y, instruction.end.x, instruction.end.y
-        // );
+        let covered_points = instruction.get_covered_points(false);
 
-        let covered_points = instruction.get_covered_points();
+        for point in covered_points {
+            grid[point.y][point.x] += 1;
+        }
+    }
+
+    grid.iter()
+        .map(|row| row.iter().filter(|&n| *n >= 2).count())
+        .sum::<usize>()
+}
+
+fn part2(instructions: &Vec<Instruction>) -> usize {
+    const GRID_SIZE: usize = 1000;
+    let mut grid: [[u8; GRID_SIZE]; GRID_SIZE] = [[0; GRID_SIZE]; GRID_SIZE];
+
+    for instruction in instructions {
+        let covered_points = instruction.get_covered_points(true);
 
         for point in covered_points {
             grid[point.y][point.x] += 1;
@@ -42,7 +55,7 @@ fn part1(instructions: &Vec<Instruction>) -> usize {
 }
 
 fn get_input() -> Vec<Instruction> {
-    let raw_input = include_str!("testInput.txt");
+    let raw_input = include_str!("input.txt");
     let input = raw_input.lines().map(|s| s.trim());
 
     input
@@ -74,6 +87,7 @@ fn get_input() -> Vec<Instruction> {
         .collect::<Vec<_>>()
 }
 
+#[derive(Copy, Clone)]
 struct Point {
     x: usize,
     y: usize,
@@ -93,7 +107,7 @@ impl Instruction {
         self.start.x == self.end.x
     }
 
-    fn get_covered_points(&self) -> Vec<Point> {
+    fn get_covered_points(&self, include_diag: bool) -> Vec<Point> {
         let mut covered_points = vec![];
 
         if self.is_horizontal() {
@@ -113,7 +127,7 @@ impl Instruction {
                 covered_points.push(Point {
                     x: i,
                     y: self.start.y,
-                })
+                });
             }
         }
 
@@ -134,7 +148,39 @@ impl Instruction {
                 covered_points.push(Point {
                     x: self.start.x,
                     y: i,
-                })
+                });
+            }
+        }
+
+        if include_diag && !self.is_vertical() && !self.is_horizontal() {
+            let smallest_x_point = if self.start.x >= self.end.x {
+                self.end
+            } else {
+                self.start
+            };
+
+            let largest_x_point = if self.start.x <= self.end.x {
+                self.end
+            } else {
+                self.start
+            };
+
+            if smallest_x_point.y < largest_x_point.y {
+                let diff = largest_x_point.y - smallest_x_point.y + 1;
+                for i in 0..diff {
+                    covered_points.push(Point {
+                        x: smallest_x_point.x + i,
+                        y: smallest_x_point.y + i,
+                    });
+                }
+            } else {
+                let diff = smallest_x_point.y - largest_x_point.y + 1;
+                for i in 0..diff {
+                    covered_points.push(Point {
+                        x: largest_x_point.x - i,
+                        y: largest_x_point.y + i,
+                    });
+                }
             }
         }
 
