@@ -22,16 +22,19 @@ fn part2(input_positions: &Vec<i32>) -> i32 {
     })
 }
 
-fn find_min_distance(input_positions: &Vec<i32>, f: fn(target: i32, distance: i32) -> i32) -> i32 {
+fn find_min_distance(
+    input_positions: &Vec<i32>,
+    measure_distance: fn(target: i32, distance: i32) -> i32,
+) -> i32 {
     let biggest_position = *input_positions.iter().max().unwrap();
     let smallest_position = *input_positions.iter().min().unwrap();
 
-    Vec::from_iter(smallest_position..=biggest_position)
-        .iter()
-        .map(|&target| {
+    (smallest_position..=biggest_position)
+        .into_iter()
+        .map(|target| {
             input_positions
                 .iter()
-                .map(|&distance| f(target, distance))
+                .map(|&distance| measure_distance(target, distance))
                 .sum()
         })
         .min()
