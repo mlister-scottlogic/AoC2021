@@ -11,26 +11,27 @@ fn main() {
 }
 
 fn part1(input_positions: &Vec<i32>) -> i32 {
-    let biggest_position = *input_positions.iter().max().unwrap();
-    let smallest_position = *input_positions.iter().min().unwrap();
-
-    Vec::from_iter(smallest_position..=biggest_position)
-        .iter()
-        .map(|i| input_positions.iter().map(|p| (i - p).abs()).sum())
-        .min()
-        .unwrap()
+    find_min_distance(input_positions, |target: i32, distance: i32| {
+        (target - distance).abs()
+    })
 }
 
 fn part2(input_positions: &Vec<i32>) -> i32 {
+    find_min_distance(input_positions, |target: i32, distance: i32| {
+        add_cumulative((target - distance).abs())
+    })
+}
+
+fn find_min_distance(input_positions: &Vec<i32>, f: fn(target: i32, distance: i32) -> i32) -> i32 {
     let biggest_position = *input_positions.iter().max().unwrap();
     let smallest_position = *input_positions.iter().min().unwrap();
 
     Vec::from_iter(smallest_position..=biggest_position)
         .iter()
-        .map(|i| {
+        .map(|&target| {
             input_positions
                 .iter()
-                .map(|p| add_cumulative((i - p).abs()))
+                .map(|&distance| f(target, distance))
                 .sum()
         })
         .min()
