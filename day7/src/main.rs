@@ -1,4 +1,3 @@
-use cached::proc_macro::cached;
 extern crate stopwatch;
 use stopwatch::Stopwatch;
 
@@ -40,14 +39,8 @@ fn part2(input_positions: &Vec<i32>) -> i32 {
     *distances.iter().min().unwrap()
 }
 
-// Caching saves ~9 seconds on my PC
-#[cached]
 fn add_cumulative(current_value: i32) -> i32 {
-    if current_value == 0 {
-        return 0;
-    }
-
-    current_value + add_cumulative(current_value - 1)
+    (current_value + 1) * (current_value) / 2
 }
 
 fn get_input() -> Vec<i32> {
