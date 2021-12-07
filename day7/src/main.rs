@@ -12,31 +12,29 @@ fn main() {
 
 fn part1(input_positions: &Vec<i32>) -> i32 {
     let biggest_position = *input_positions.iter().max().unwrap();
+    let smallest_position = *input_positions.iter().min().unwrap();
 
-    let mut distances: Vec<i32> = vec![];
-
-    for i in 0..=biggest_position {
-        distances.push(input_positions.iter().map(|p| (i - p).abs()).sum());
-    }
-
-    *distances.iter().min().unwrap()
+    Vec::from_iter(smallest_position..=biggest_position)
+        .iter()
+        .map(|i| input_positions.iter().map(|p| (i - p).abs()).sum())
+        .min()
+        .unwrap()
 }
 
 fn part2(input_positions: &Vec<i32>) -> i32 {
     let biggest_position = *input_positions.iter().max().unwrap();
+    let smallest_position = *input_positions.iter().min().unwrap();
 
-    let mut distances: Vec<i32> = vec![];
-
-    for i in 0..=biggest_position {
-        distances.push(
+    Vec::from_iter(smallest_position..=biggest_position)
+        .iter()
+        .map(|i| {
             input_positions
                 .iter()
                 .map(|p| add_cumulative((i - p).abs()))
-                .sum(),
-        );
-    }
-
-    *distances.iter().min().unwrap()
+                .sum()
+        })
+        .min()
+        .unwrap()
 }
 
 fn add_cumulative(current_value: i32) -> i32 {
