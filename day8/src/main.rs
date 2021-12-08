@@ -28,22 +28,16 @@ fn decode_input(input: &Vec<Vec<char>>) -> Vec<String> {
     // There is only 1 value with 2 characters
     let one_chars = input.iter().filter(|c| c.len() == 2).collect::<Vec<_>>()[0];
 
-    // println!("One {:?}", one_chars);
-
     // There is only 1 group of 7, which includes the group of 2 + 1
     let seven_chars = input.iter().filter(|c| c.len() == 3).collect::<Vec<_>>()[0];
     let top_char = seven_chars.clone().uniq(one_chars.clone())[0];
-    // println!("Top {}", top_char);
 
     // Get chars in the 4 character
     let four_chars = input.iter().filter(|c| c.len() == 4).collect::<Vec<_>>()[0];
-    // println!("Four {:?}", four_chars);
 
     // We know that 9 is made up of the 4 + top, and the 1 remaining
     let mut almost_9 = four_chars.clone();
     almost_9.extend(vec![top_char]);
-
-    // println!("Almost 9 {:?}", almost_9);
 
     let nine_chars = input
         .iter()
@@ -51,8 +45,6 @@ fn decode_input(input: &Vec<Vec<char>>) -> Vec<String> {
         .filter(|s| (*s).uniq(almost_9.clone()).len() == 1)
         .collect::<Vec<_>>()[0];
     let bottom_char = nine_chars.uniq(almost_9.clone())[0];
-
-    // println!("Bottom {}", bottom_char);
 
     // bottom left must be the 1 character not in 9
     let bottom_left_char = all_chars.clone().uniq(nine_chars.clone())[0];
@@ -69,18 +61,12 @@ fn decode_input(input: &Vec<Vec<char>>) -> Vec<String> {
 
     let top_left_char = zero_chars.uniq(almost_0.clone())[0];
 
-    // println!("Top left {:?}", top_left_char);
-
     let mut almost_4 = one_chars.clone();
     almost_4.push(top_left_char);
 
     let middle_char = four_chars.clone().uniq(almost_4)[0];
-    // println!("Middle {:?}", middle_char);
-
     let mut unique_to_3 = one_chars.clone();
     unique_to_3.extend(vec![top_char, middle_char, bottom_char]);
-
-    // println!("Unique to 3 {:?}", unique_to_3);
 
     let three_chars = input
         .iter()
