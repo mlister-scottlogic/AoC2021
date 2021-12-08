@@ -1,28 +1,13 @@
-use std::thread;
-
-const STACK_SIZE: usize = 16 * 1024 * 1024;
-
-fn run() {
+fn main() {
     let instructions = get_input();
 
     println!("{}", part1(&instructions));
     println!("{}", part2(&instructions));
 }
 
-fn main() {
-    // I'm arguing memory is not a big bottleneck on any PC I'll run this solution on
-    let child = thread::Builder::new()
-        .stack_size(STACK_SIZE)
-        .spawn(run)
-        .unwrap();
-
-    // Wait for thread to join
-    child.join().unwrap();
-}
-
 fn part1(instructions: &Vec<Instruction>) -> usize {
     const GRID_SIZE: usize = 1000;
-    let mut grid: [[u8; GRID_SIZE]; GRID_SIZE] = [[0; GRID_SIZE]; GRID_SIZE];
+    let mut grid = vec![vec![0; GRID_SIZE]; GRID_SIZE];
 
     for instruction in instructions {
         let covered_points = instruction.get_covered_points(false);
