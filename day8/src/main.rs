@@ -10,24 +10,16 @@ fn main() {
 }
 
 fn part2(input: &Vec<SignalLine>) -> usize {
-    let mut overall_total = 0;
-
-    for line in input {
-        // println!("{:?}", line.input);
+    input.iter().fold(0, |overall_total, line| {
         let decoded_input = decode_input(&line.input);
 
-        let mut total = 0;
-        for o in line.output.iter() {
+        let total = line.output.iter().fold(0, |total, o| {
             let n = decoded_input.iter().position(|s| s == o).unwrap();
-            total = total * 10 + n;
-        }
+            total * 10 + n
+        });
 
-        overall_total += total;
-
-        // println!("{}", total);
-    }
-
-    overall_total
+        overall_total + total
+    })
 }
 
 fn decode_input(input: &Vec<Vec<char>>) -> Vec<String> {
