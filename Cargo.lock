@@ -140,6 +140,10 @@ dependencies = [
 ]
 
 [[package]]
+name = "day8"
+version = "0.1.0"
+
+[[package]]
 name = "event-listener"
 version = "2.5.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
