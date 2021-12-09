@@ -9,12 +9,12 @@ fn main() {
 fn part2(heightmap: &Vec<Vec<u32>>) -> u32 {
     let mut visited_map = heightmap
         .iter()
-        .map(|row| row.iter().map(|&i| (i, i == 9)).collect::<Vec<_>>())
+        .map(|row| row.iter().map(|&i| i == 9).collect::<Vec<_>>())
         .collect::<Vec<_>>();
 
     let mut basin_sizes = find_basin_sizes(&mut visited_map);
 
-    println!("{:?}", basin_sizes);
+    // println!("{:?}", basin_sizes);
 
     basin_sizes.sort();
     basin_sizes.reverse();
@@ -22,7 +22,7 @@ fn part2(heightmap: &Vec<Vec<u32>>) -> u32 {
     return basin_sizes[0] * basin_sizes[1] * basin_sizes[2];
 }
 
-fn find_basin_sizes(visited_map: &mut Vec<Vec<(u32, bool)>>) -> Vec<u32> {
+fn find_basin_sizes(visited_map: &mut Vec<Vec<bool>>) -> Vec<u32> {
     let column_height = visited_map.len();
     let row_width = visited_map[0].len();
 
@@ -30,7 +30,7 @@ fn find_basin_sizes(visited_map: &mut Vec<Vec<(u32, bool)>>) -> Vec<u32> {
 
     for y in 0..column_height {
         for x in 0..row_width {
-            if !visited_map[y][x].1 {
+            if !visited_map[y][x] {
                 basin_sizes.push(crawl_basin(visited_map, x, y));
             }
         }
@@ -39,8 +39,8 @@ fn find_basin_sizes(visited_map: &mut Vec<Vec<(u32, bool)>>) -> Vec<u32> {
     basin_sizes
 }
 
-fn crawl_basin(visited_map: &mut Vec<Vec<(u32, bool)>>, x: usize, y: usize) -> u32 {
-    if visited_map[y][x].1 {
+fn crawl_basin(visited_map: &mut Vec<Vec<bool>>, x: usize, y: usize) -> u32 {
+    if visited_map[y][x] {
         return 0;
     }
 
@@ -48,7 +48,7 @@ fn crawl_basin(visited_map: &mut Vec<Vec<(u32, bool)>>, x: usize, y: usize) -> u
     let row_width = visited_map[0].len();
 
     let mut points_in_basin = 1;
-    visited_map[y][x].1 = true;
+    visited_map[y][x] = true;
 
     if x > 0 {
         points_in_basin += crawl_basin(visited_map, x - 1, y);
