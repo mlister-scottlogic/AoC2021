@@ -6,11 +6,10 @@ fn main() {
 }
 
 fn part2(input: &Vec<Vec<char>>) -> u64 {
-    let mut scores = input
+    let mut scores = parse_input(input)
         .iter()
-        .map(|row| find_incomplete_score(row))
-        .filter(|score| score.is_some())
-        .map(|score| score.unwrap())
+        .filter(|o| o.1.is_none())
+        .map(|row| find_incomplete_score(&mut row.0.clone()))
         .collect::<Vec<_>>();
 
     scores.sort();
@@ -20,72 +19,10 @@ fn part2(input: &Vec<Vec<char>>) -> u64 {
     scores[mid]
 }
 
-fn find_incomplete_score(row: &Vec<char>) -> Option<u64> {
-    let mut opening_chars = vec![];
-
-    for c in row {
-        match c {
-            '(' => opening_chars.push('('),
-            '[' => opening_chars.push('['),
-            '{' => opening_chars.push('{'),
-            '<' => opening_chars.push('<'),
-
-            ')' => match opening_chars.last() {
-                Some(x) => {
-                    if *x != '(' {
-                        return None;
-                    }
-
-                    opening_chars.pop();
-                }
-                None => {
-                    return None;
-                }
-            },
-            ']' => match opening_chars.last() {
-                Some(x) => {
-                    if *x != '[' {
-                        return None;
-                    }
-
-                    opening_chars.pop();
-                }
-                None => {
-                    return None;
-                }
-            },
-            '}' => match opening_chars.last() {
-                Some(x) => {
-                    if *x != '{' {
-                        return None;
-                    }
-
-                    opening_chars.pop();
-                }
-                None => {
-                    return None;
-                }
-            },
-            '>' => match opening_chars.last() {
-                Some(x) => {
-                    if *x != '<' {
-                        return None;
-                    }
-
-                    opening_chars.pop();
-                }
-                None => {
-                    return None;
-                }
-            },
-
-            _ => panic!("Unexpected character {}", c),
-        }
-    }
-
+fn find_incomplete_score(opening_chars: &mut Vec<char>) -> u64 {
     opening_chars.reverse();
 
-    Some(opening_chars.iter().fold(0, |total, c| {
+    opening_chars.iter().fold(0, |total, c| {
         let score = match c {
             '(' => 1,
             '[' => 2,
@@ -94,79 +31,96 @@ fn find_incomplete_score(row: &Vec<char>) -> Option<u64> {
             _ => panic!("Unexpected character"),
         };
         total * 5 + score
-    }))
+    })
 }
 
 fn part1(input: &Vec<Vec<char>>) -> u32 {
-    input
+    parse_input(input)
         .iter()
-        .fold(0, |total, row| total + find_illegal_char_score(row))
+        .map(|i| i.1)
+        .filter(|o| o.is_some())
+        .map(|n| n.unwrap())
+        .fold(0, |total, c| {
+            let score = match c {
+                ')' => 3,
+                ']' => 57,
+                '}' => 1197,
+                '>' => 25137,
+                _ => panic!("Unexpected character"),
+            };
+            total + score
+        })
 }
 
-fn find_illegal_char_score(row: &Vec<char>) -> u32 {
-    let mut opening_chars = vec![];
+fn parse_input(input: &Vec<Vec<char>>) -> Vec<(Vec<char>, Option<char>)> {
+    input
+        .iter()
+        .map(|row| {
+            let mut opening_chars = vec![];
 
-    for c in row {
-        match c {
-            '(' => opening_chars.push('('),
-            '[' => opening_chars.push('['),
-            '{' => opening_chars.push('{'),
-            '<' => opening_chars.push('<'),
+            for c in row {
+                match c {
+                    '(' => opening_chars.push('('),
+                    '[' => opening_chars.push('['),
+                    '{' => opening_chars.push('{'),
+                    '<' => opening_chars.push('<'),
 
-            ')' => match opening_chars.last() {
-                Some(x) => {
-                    if *x != '(' {
-                        return 3;
-                    }
+                    ')' => match opening_chars.last() {
+                        Some(x) => {
+                            if *x != '(' {
+                                return (opening_chars, Some(*c));
+                            }
 
-                    opening_chars.pop();
-                }
-                None => {
-                    return 3;
-                }
-            },
-            ']' => match opening_chars.last() {
-                Some(x) => {
-                    if *x != '[' {
-                        return 57;
-                    }
+                            opening_chars.pop();
+                        }
+                        None => {
+                            return (opening_chars, Some(*c));
+                        }
+                    },
+                    ']' => match opening_chars.last() {
+                        Some(x) => {
+                            if *x != '[' {
+                                return (opening_chars, Some(*c));
+                            }
 
-                    opening_chars.pop();
-                }
-                None => {
-                    return 57;
-                }
-            },
-            '}' => match opening_chars.last() {
-                Some(x) => {
-                    if *x != '{' {
-                        return 1197;
-                    }
+                            opening_chars.pop();
+                        }
+                        None => {
+                            return (opening_chars, Some(*c));
+                        }
+                    },
+                    '}' => match opening_chars.last() {
+                        Some(x) => {
+                            if *x != '{' {
+                                return (opening_chars, Some(*c));
+                            }
 
-                    opening_chars.pop();
-                }
-                None => {
-                    return 1197;
-                }
-            },
-            '>' => match opening_chars.last() {
-                Some(x) => {
-                    if *x != '<' {
-                        return 25137;
-                    }
+                            opening_chars.pop();
+                        }
+                        None => {
+                            return (opening_chars, Some(*c));
+                        }
+                    },
+                    '>' => match opening_chars.last() {
+                        Some(x) => {
+                            if *x != '<' {
+                                return (opening_chars, Some(*c));
+                            }
 
-                    opening_chars.pop();
-                }
-                None => {
-                    return 25137;
-                }
-            },
+                            opening_chars.pop();
+                        }
+                        None => {
+                            return (opening_chars, Some(*c));
+                        }
+                    },
 
-            _ => panic!("Unexpected character {}", c),
-        }
-    }
+                    _ => panic!("Unexpected character {}", c),
+                }
+            }
 
-    0
+            (opening_chars, None)
+        })
+        .collect::<Vec<_>>()
 }
 
 fn get_input() -> Vec<Vec<char>> {
