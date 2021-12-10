@@ -76,49 +76,41 @@ fn parse_input(input: &Vec<Vec<char>>) -> Vec<LineType> {
                     '{' => opening_chars.push(c),
                     '<' => opening_chars.push(c),
 
-                    ')' => match opening_chars.last() {
+                    ')' => match opening_chars.pop() {
                         Some(x) => {
-                            if *x != '(' {
+                            if x != '(' {
                                 return LineType::Corrupt(c);
                             }
-
-                            opening_chars.pop();
                         }
                         None => {
                             return LineType::Corrupt(c);
                         }
                     },
-                    ']' => match opening_chars.last() {
+                    ']' => match opening_chars.pop() {
                         Some(x) => {
-                            if *x != '[' {
+                            if x != '[' {
                                 return LineType::Corrupt(c);
                             }
-
-                            opening_chars.pop();
                         }
                         None => {
                             return LineType::Corrupt(c);
                         }
                     },
-                    '}' => match opening_chars.last() {
+                    '}' => match opening_chars.pop() {
                         Some(x) => {
-                            if *x != '{' {
+                            if x != '{' {
                                 return LineType::Corrupt(c);
                             }
-
-                            opening_chars.pop();
                         }
                         None => {
                             return LineType::Corrupt(c);
                         }
                     },
-                    '>' => match opening_chars.last() {
+                    '>' => match opening_chars.pop() {
                         Some(x) => {
-                            if *x != '<' {
+                            if x != '<' {
                                 return LineType::Corrupt(c);
                             }
-
-                            opening_chars.pop();
                         }
                         None => {
                             return LineType::Corrupt(c);
