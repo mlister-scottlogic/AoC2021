@@ -8,8 +8,14 @@ fn main() {
 fn part2(input: &Vec<Vec<char>>) -> u64 {
     let mut scores = parse_input(input)
         .iter()
-        .filter(|o| o.1.is_none())
-        .map(|row| find_incomplete_score(&mut row.0.clone()))
+        .filter(|o| match *o {
+            LineType::Incomplete(_) => true,
+            _ => false,
+        })
+        .map(|row| match row {
+            LineType::Incomplete(x) => find_incomplete_score(&mut x.clone()),
+            _ => panic!("Unexpected value"),
+        })
         .collect::<Vec<_>>();
 
     scores.sort();
@@ -37,9 +43,14 @@ fn find_incomplete_score(opening_chars: &mut Vec<char>) -> u64 {
 fn part1(input: &Vec<Vec<char>>) -> u32 {
     parse_input(input)
         .iter()
-        .map(|i| i.1)
-        .filter(|o| o.is_some())
-        .map(|n| n.unwrap())
+        .filter(|o| match *o {
+            LineType::Corrupt(_) => true,
+            _ => false,
+        })
+        .map(|row| match row {
+            LineType::Corrupt(x) => x,
+            _ => panic!("Unexpected value"),
+        })
         .fold(0, |total, c| {
             let score = match c {
                 ')' => 3,
@@ -52,7 +63,7 @@ fn part1(input: &Vec<Vec<char>>) -> u32 {
         })
 }
 
-fn parse_input(input: &Vec<Vec<char>>) -> Vec<(Vec<char>, Option<char>)> {
+fn parse_input(input: &Vec<Vec<char>>) -> Vec<LineType> {
     input
         .iter()
         .map(|row| {
@@ -68,49 +79,49 @@ fn parse_input(input: &Vec<Vec<char>>) -> Vec<(Vec<char>, Option<char>)> {
                     ')' => match opening_chars.last() {
                         Some(x) => {
                             if *x != '(' {
-                                return (opening_chars, Some(c));
+                                return LineType::Corrupt(c);
                             }
 
                             opening_chars.pop();
                         }
                         None => {
-                            return (opening_chars, Some(c));
+                            return LineType::Corrupt(c);
                         }
                     },
                     ']' => match opening_chars.last() {
                         Some(x) => {
                             if *x != '[' {
-                                return (opening_chars, Some(c));
+                                return LineType::Corrupt(c);
                             }
 
                             opening_chars.pop();
                         }
                         None => {
-                            return (opening_chars, Some(c));
+                            return LineType::Corrupt(c);
                         }
                     },
                     '}' => match opening_chars.last() {
                         Some(x) => {
                             if *x != '{' {
-                                return (opening_chars, Some(c));
+                                return LineType::Corrupt(c);
                             }
 
                             opening_chars.pop();
                         }
                         None => {
-                            return (opening_chars, Some(c));
+                            return LineType::Corrupt(c);
                         }
                     },
                     '>' => match opening_chars.last() {
                         Some(x) => {
                             if *x != '<' {
-                                return (opening_chars, Some(c));
+                                return LineType::Corrupt(c);
                             }
 
                             opening_chars.pop();
                         }
                         None => {
-                            return (opening_chars, Some(c));
+                            return LineType::Corrupt(c);
                         }
                     },
 
@@ -118,9 +129,14 @@ fn parse_input(input: &Vec<Vec<char>>) -> Vec<(Vec<char>, Option<char>)> {
                 }
             }
 
-            (opening_chars, None)
+            LineType::Incomplete(opening_chars)
         })
         .collect::<Vec<_>>()
+}
+
+enum LineType {
+    Incomplete(Vec<char>),
+    Corrupt(char),
 }
 
 fn get_input() -> Vec<Vec<char>> {
