@@ -58,59 +58,59 @@ fn parse_input(input: &Vec<Vec<char>>) -> Vec<(Vec<char>, Option<char>)> {
         .map(|row| {
             let mut opening_chars = vec![];
 
-            for c in row {
+            for &c in row {
                 match c {
-                    '(' => opening_chars.push('('),
-                    '[' => opening_chars.push('['),
-                    '{' => opening_chars.push('{'),
-                    '<' => opening_chars.push('<'),
+                    '(' => opening_chars.push(c),
+                    '[' => opening_chars.push(c),
+                    '{' => opening_chars.push(c),
+                    '<' => opening_chars.push(c),
 
                     ')' => match opening_chars.last() {
                         Some(x) => {
                             if *x != '(' {
-                                return (opening_chars, Some(*c));
+                                return (opening_chars, Some(c));
                             }
 
                             opening_chars.pop();
                         }
                         None => {
-                            return (opening_chars, Some(*c));
+                            return (opening_chars, Some(c));
                         }
                     },
                     ']' => match opening_chars.last() {
                         Some(x) => {
                             if *x != '[' {
-                                return (opening_chars, Some(*c));
+                                return (opening_chars, Some(c));
                             }
 
                             opening_chars.pop();
                         }
                         None => {
-                            return (opening_chars, Some(*c));
+                            return (opening_chars, Some(c));
                         }
                     },
                     '}' => match opening_chars.last() {
                         Some(x) => {
                             if *x != '{' {
-                                return (opening_chars, Some(*c));
+                                return (opening_chars, Some(c));
                             }
 
                             opening_chars.pop();
                         }
                         None => {
-                            return (opening_chars, Some(*c));
+                            return (opening_chars, Some(c));
                         }
                     },
                     '>' => match opening_chars.last() {
                         Some(x) => {
                             if *x != '<' {
-                                return (opening_chars, Some(*c));
+                                return (opening_chars, Some(c));
                             }
 
                             opening_chars.pop();
                         }
                         None => {
-                            return (opening_chars, Some(*c));
+                            return (opening_chars, Some(c));
                         }
                     },
 
