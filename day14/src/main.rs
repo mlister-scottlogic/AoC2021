@@ -1,32 +1,19 @@
 use std::collections::HashMap;
 
 fn main() {
-    println!("Day 14 part 1 {}", part1());
-    println!("Day 14 part 2 {}", part2());
+    println!(
+        "Day 14 part 1 {}",
+        run("VHCKBFOVCHHKOHBPNCKO".to_string(), 10)
+    );
+    println!(
+        "Day 14 part 2 {}",
+        run("VHCKBFOVCHHKOHBPNCKO".to_string(), 40)
+    );
 }
 
-fn part1() -> i64 {
+fn run(input: String, iterations: u32) -> i64 {
     let rules = get_input();
-    let output = process_rules("VHCKBFOVCHHKOHBPNCKO".to_string(), rules, 10);
-
-    let mut counts = HashMap::new();
-
-    for t in output {
-        let chars = t.0.chars().collect::<Vec<_>>();
-
-        *counts.entry(chars[0]).or_insert(0) += t.1;
-        *counts.entry(chars[1]).or_insert(0) += t.1;
-    }
-
-    let max = counts.clone().into_iter().max_by_key(|&(_, count)| count);
-    let min = counts.clone().into_iter().min_by_key(|&(_, count)| count);
-
-    (max.unwrap().1 + 1) / 2 - (min.unwrap().1 + 1) / 2
-}
-
-fn part2() -> i64 {
-    let rules = get_input();
-    let output = process_rules("VHCKBFOVCHHKOHBPNCKO".to_string(), rules, 40);
+    let output = process_rules(input, rules, iterations);
 
     let mut counts = HashMap::new();
 
