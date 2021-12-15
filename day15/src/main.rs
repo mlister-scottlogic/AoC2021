@@ -59,7 +59,7 @@ fn part2() -> i32 {
             let mut new_value = initial_value + y_offset + x_offset;
 
             if new_value > 9 {
-                new_value = new_value - 9;
+                new_value = new_value % 10 + 1;
             }
 
             input.insert((x, y), new_value);
