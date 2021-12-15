@@ -2,15 +2,14 @@ use std::collections::HashMap;
 use std::collections::HashSet;
 
 fn main() {
-    println!("{}", part1());
+    println!("Day 15 part 1 {}", part1());
+    println!("Day 15 part 2 {}", part2());
 }
 
 fn part1() -> i32 {
     let input = get_input();
 
     let grid_size = 99;
-
-    println!("Starting path");
 
     let cheapest_path = a_star(
         (0, 0),
@@ -19,9 +18,50 @@ fn part1() -> i32 {
         manhattan_distance,
     )
     .expect("No path found");
-    println!("Finished path");
 
-    println!("{:?}", cheapest_path);
+    let mut score = 0;
+
+    for i in 1..cheapest_path.len() {
+        score += input[&cheapest_path[i]];
+    }
+
+    score
+}
+
+fn part2() -> i32 {
+    let mut input = get_input();
+
+    let copies = 5;
+    let initial_grid_size = 100;
+    let big_grid_size = initial_grid_size * copies - 1;
+
+    for y in 0..=big_grid_size {
+        for x in 0..=big_grid_size {
+            let seed_y = y % initial_grid_size;
+            let seed_x = x % initial_grid_size;
+
+            let y_offset = y / initial_grid_size;
+            let x_offset = x / initial_grid_size;
+
+            let initial_value = input[&(seed_x, seed_y)];
+
+            let mut new_value = initial_value + y_offset + x_offset;
+
+            if new_value > 9 {
+                new_value = new_value - 9;
+            }
+
+            input.insert((x, y), new_value);
+        }
+    }
+
+    let cheapest_path = a_star(
+        (0, 0),
+        (big_grid_size, big_grid_size),
+        input.clone(),
+        manhattan_distance,
+    )
+    .expect("No path found");
 
     let mut score = 0;
 
