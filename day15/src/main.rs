@@ -11,6 +11,10 @@ fn main() {
     // do something that takes some time
     println!("Day 15 part 2 {}", part2());
     println!("Thing took {}ms", sw.elapsed_ms());
+
+    // Djikstra with 50 copies : 60,976ms
+    // A* with Manhattan distance: 59,281
+    // Virtually no difference
 }
 
 fn part1() -> i32 {
