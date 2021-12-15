@@ -3,9 +3,14 @@ use std::collections::HashMap;
 
 use std::cmp::Ordering;
 
+use stopwatch::Stopwatch;
+
 fn main() {
     println!("Day 15 part 1 {}", part1());
+    let sw = Stopwatch::start_new();
+    // do something that takes some time
     println!("Day 15 part 2 {}", part2());
+    println!("Thing took {}ms", sw.elapsed_ms());
 }
 
 fn part1() -> i32 {
@@ -85,7 +90,7 @@ fn a_star(
     start: (i32, i32),
     goal: (i32, i32),
     all_nodes: HashMap<(i32, i32), i32>,
-    best_guess_distance: fn((i32, i32), (i32, i32)) -> i32,
+    heuristic_distance: fn((i32, i32), (i32, i32)) -> i32,
 ) -> Option<Vec<(i32, i32)>> {
     // The set of discovered nodes that may need to be (re-)expanded.
     // Initially, only the start node is known.
@@ -93,7 +98,7 @@ fn a_star(
     let mut open_set = BinaryHeap::new();
     open_set.push(FScore {
         node: start,
-        fscore: best_guess_distance(start, goal),
+        fscore: heuristic_distance(start, goal),
     });
 
     // For node n, cameFrom[n] is the node immediately preceding it on the cheapest path from start
@@ -127,7 +132,7 @@ fn a_star(
 
                 g_score.insert(neighbour, tentative_g_score);
 
-                let new_f_score = tentative_g_score + best_guess_distance(neighbour, goal);
+                let new_f_score = tentative_g_score + heuristic_distance(neighbour, goal);
 
                 open_set.push(FScore {
                     node: neighbour,
