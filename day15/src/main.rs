@@ -155,13 +155,13 @@ struct FScore {
 
 impl Ord for FScore {
     fn cmp(&self, other: &Self) -> Ordering {
-        self.fscore.cmp(&other.fscore)
+        self.fscore.cmp(&other.fscore).reverse()
     }
 }
 
 impl PartialOrd for FScore {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
-        Some(self.cmp(&other).reverse())
+        Some(self.cmp(&other))
     }
 }
 
