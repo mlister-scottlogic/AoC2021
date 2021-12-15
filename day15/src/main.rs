@@ -1,5 +1,7 @@
+use std::collections::BinaryHeap;
 use std::collections::HashMap;
-use std::collections::HashSet;
+
+use std::cmp::Ordering;
 
 fn main() {
     println!("Day 15 part 1 {}", part1());
@@ -88,8 +90,11 @@ fn a_star(
     // The set of discovered nodes that may need to be (re-)expanded.
     // Initially, only the start node is known.
     // This is usually implemented as a min-heap or priority queue rather than a hash-set.
-    let mut open_set = HashSet::new();
-    open_set.insert(start);
+    let mut open_set = BinaryHeap::new();
+    open_set.push(FScore {
+        node: start,
+        fscore: best_guess_distance(start, goal),
+    });
 
     // For node n, cameFrom[n] is the node immediately preceding it on the cheapest path from start
     // to n currently known.
@@ -102,30 +107,15 @@ fn a_star(
     }
     g_score.insert(start, 0);
 
-    // For node n, fScore[n] := gScore[n] + h(n). fScore[n] represents our current best guess as to
-    // how short a path from start to finish can be if it goes through n.
-    let mut f_score = HashMap::new();
-    for n in all_nodes.iter() {
-        f_score.insert(*n.0, i32::MAX);
-    }
-    f_score.insert(start, best_guess_distance(start, goal));
-
     while !open_set.is_empty() {
         // This operation can occur in O(1) time if openSet is a min-heap or a priority queue
         // current := the node in openSet having the lowest fScore[] value
-        let best_node = open_set
-            .iter()
-            .copied()
-            .map(|n| (n, f_score[&n]))
-            .min_by_key(|&(_, score)| score)
-            .unwrap();
-        let current = best_node.0;
+        let best_node = open_set.pop().unwrap();
+        let current = best_node.node;
 
         if current == goal {
             return Some(reconstruct_path(came_from, current));
         }
-
-        open_set.remove(&current);
 
         let neighbours = get_neighbours(current, &all_nodes);
 
@@ -138,11 +128,11 @@ fn a_star(
                 g_score.insert(neighbour, tentative_g_score);
 
                 let new_f_score = tentative_g_score + best_guess_distance(neighbour, goal);
-                f_score.insert(neighbour, new_f_score);
 
-                if !open_set.contains(&neighbour) {
-                    open_set.insert(neighbour);
-                }
+                open_set.push(FScore {
+                    node: neighbour,
+                    fscore: new_f_score,
+                });
             }
         }
     }
@@ -150,6 +140,32 @@ fn a_star(
     // Open set is empty but goal was never reached
     // return failure
     None
+}
+
+#[derive(Debug)]
+struct FScore {
+    node: (i32, i32),
+    fscore: i32,
+}
+
+impl Ord for FScore {
+    fn cmp(&self, other: &Self) -> Ordering {
+        self.fscore.cmp(&other.fscore)
+    }
+}
+
+impl PartialOrd for FScore {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        Some(self.cmp(&other).reverse())
+    }
+}
+
+impl Eq for FScore {}
+
+impl PartialEq for FScore {
+    fn eq(&self, other: &Self) -> bool {
+        self.node == other.node
+    }
 }
 
 fn reconstruct_path(
