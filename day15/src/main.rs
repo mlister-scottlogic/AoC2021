@@ -83,7 +83,7 @@ fn a_star(
     start: (i32, i32),
     goal: (i32, i32),
     all_nodes: HashMap<(i32, i32), i32>,
-    h: fn((i32, i32), (i32, i32)) -> i32,
+    best_guess_distance: fn((i32, i32), (i32, i32)) -> i32,
 ) -> Option<Vec<(i32, i32)>> {
     // The set of discovered nodes that may need to be (re-)expanded.
     // Initially, only the start node is known.
@@ -108,7 +108,7 @@ fn a_star(
     for n in all_nodes.iter() {
         f_score.insert(*n.0, i32::MAX);
     }
-    f_score.insert(start, h(start, goal));
+    f_score.insert(start, best_guess_distance(start, goal));
 
     while !open_set.is_empty() {
         // This operation can occur in O(1) time if openSet is a min-heap or a priority queue
@@ -137,7 +137,7 @@ fn a_star(
 
                 g_score.insert(neighbour, tentative_g_score);
 
-                let new_f_score = tentative_g_score + h(neighbour, goal);
+                let new_f_score = tentative_g_score + best_guess_distance(neighbour, goal);
                 f_score.insert(neighbour, new_f_score);
 
                 if !open_set.contains(&neighbour) {
