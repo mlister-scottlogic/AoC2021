@@ -113,27 +113,27 @@ fn a_star(
     while !open_set.is_empty() {
         // This operation can occur in O(1) time if openSet is a min-heap or a priority queue
         // current := the node in openSet having the lowest fScore[] value
-        let open_set_clone = open_set.clone();
-        let best_node = open_set_clone
+        let best_node = open_set
             .iter()
-            .map(|n| (n, f_score[n]))
+            .copied()
+            .map(|n| (n, f_score[&n]))
             .min_by_key(|&(_, score)| score)
             .unwrap();
         let current = best_node.0;
 
-        if *current == goal {
-            return Some(reconstruct_path(came_from, *current));
+        if current == goal {
+            return Some(reconstruct_path(came_from, current));
         }
 
-        open_set.remove(current);
+        open_set.remove(&current);
 
-        let neighbours = get_neighbours(*current, &all_nodes);
+        let neighbours = get_neighbours(current, &all_nodes);
 
         for neighbour in neighbours {
-            let tentative_g_score = g_score[current] + all_nodes[&neighbour];
+            let tentative_g_score = g_score[&current] + all_nodes[&neighbour];
 
             if tentative_g_score < g_score[&neighbour] {
-                *came_from.entry(neighbour).or_insert(*current) = *current;
+                *came_from.entry(neighbour).or_insert(current) = current;
 
                 g_score.insert(neighbour, tentative_g_score);
 
